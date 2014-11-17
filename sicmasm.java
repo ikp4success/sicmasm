@@ -1,3 +1,11 @@
+/*
+Name: Immanuel I George
+Class: Language Processors (CIS 335)
+School: Cleveland State University
+Objective: Develop Sic Assembler
+
+*/
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
