@@ -84,7 +84,14 @@ public class SICTABLE {
 
 	public String get(Object Key) {
 		String getky = (String)hsh.get(Key);
-		return getky;
+		String fgetky= null;
+		if(getky!=null){
+			fgetky = getky;
+		}else{
+			fgetky ="000";
+		}
+		return fgetky;
 	}
+
 
 }
