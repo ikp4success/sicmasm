@@ -24,7 +24,7 @@ public class sicmasm {
 
 	public static void main(String[] args) {
 		// readText(args[0]);
-		readText("src//test.txt");
+		readText("src//siccode.txt");
 
 	}
 
@@ -39,8 +39,8 @@ public class sicmasm {
 				lc.add("0000" + "		" + line);
 			} else if (i == sc.size() - 1 || line.contains("BASE    LENGTH")) {
 				lc.add("		" + line);
-				//if (binaryCounter != 0)
-					//binaryCounter = binaryCounter - 1;
+				// if (binaryCounter != 0)
+				// binaryCounter = binaryCounter - 1;
 			} else {
 
 				if (line.contains("+")) {
@@ -204,11 +204,14 @@ public class sicmasm {
 								Integer.parseInt(retPC, 16));
 					}
 				} else {
-					String pattern = "(.*?)(\\w+)";
-					retPC = regexOperation(pattern,
-							CalcLocCode().get(CalcLocCode().size() - 1));
-					retPC = String.format("%03x", Integer.parseInt(retPC, 16));
+					retPC = "000";
 				}
+				// else {
+				// String pattern = "(.*?)(\\w+)";
+				// retPC = regexOperation(pattern,
+				// CalcLocCode().get(CalcLocCode().size() - 1));
+				// retPC = String.format("%03x", Integer.parseInt(retPC, 16));
+				// }
 			}
 
 		}
@@ -222,12 +225,87 @@ public class sicmasm {
 		for (int i = 0; CalcdLocCode.size() > i; i++) {
 			String line = CalcdLocCode.get(i);
 			if (i == 0 || i == CalcdLocCode.size() - 1
-					|| line.contains("BASE    LENGTH")) {
+					|| line.contains("BASE    LENGTH") || line.contains("RESW")
+					|| line.contains("RESB")) {
 				oc.add(line);
 			} else {
 				if (CountLine(line) == 3) {
 					if (line.contains("START")) {
 						oc.add(line + "		  " + "00000");
+					} else if (line.contains("CLEAR")) {
+
+						if (line.contains("%RA")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("A")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%RB")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("B")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%RL")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("L")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%RX")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("X")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%RS")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("S")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%RT")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("T")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%RF")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("F")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%PC") || line.contains("PC")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("PC")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%SW") || line.contains("SW")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("SW")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
 					}
 
 					else if (line.contains("MOV")) {
@@ -235,7 +313,8 @@ public class sicmasm {
 						if (line.contains("%RA")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 1);
@@ -246,7 +325,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -259,7 +339,8 @@ public class sicmasm {
 									&& !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -268,7 +349,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 2);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -278,7 +360,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -290,7 +373,8 @@ public class sicmasm {
 						if (line.contains("%RB")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 1);
@@ -301,7 +385,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -315,7 +400,8 @@ public class sicmasm {
 							else if (line.contains("#") && !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -325,7 +411,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 2);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -335,7 +422,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -348,7 +436,8 @@ public class sicmasm {
 						if (line.contains("%RL")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 1);
@@ -359,7 +448,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -372,7 +462,8 @@ public class sicmasm {
 									&& !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -382,7 +473,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 2);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -392,7 +484,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -404,7 +497,8 @@ public class sicmasm {
 						if (line.contains("%RT")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 
 								Object opcode = String.format("%02x",
 										(calcNI + 1));
@@ -415,7 +509,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 
 								Object opcode = String.format("%02x",
 										(calcNI + 2));
@@ -428,7 +523,8 @@ public class sicmasm {
 									&& !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -438,7 +534,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -450,7 +547,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -462,7 +560,8 @@ public class sicmasm {
 						if (line.contains("%RX")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 1);
@@ -473,7 +572,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -486,7 +586,8 @@ public class sicmasm {
 									&& !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -495,7 +596,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 2);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -505,7 +607,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -515,83 +618,87 @@ public class sicmasm {
 							}
 						}
 
-					} else {
-						String gpv = "000";
-						String getOPCode = "000";
-						String CalcDisp = null;
-
-						if (stc.get(Lex(line.trim())) != null) {
-							getOPCode = Lex(line.trim());
-							// System.out.println("testing-" +
-							// Lex(line.trim()));
-							getOPCode = stc.get(getOPCode);
-							CalcDisp = calcDisp(line, gpv);
-
-						} else {
-							CalcDisp = "000";
-						}
-						if (calcPassOne(CalcLocCode()).get(Lex(line.trim())) != null) {
-							gpv = Lex(line.trim());
-							gpv = calcPassOne(CalcLocCode()).get(gpv);
-							CalcDisp = calcDisp(line, gpv);
-						} else {
-							CalcDisp = getPC(line);
-						}
-
-						if (line.contains("+") && line.contains("#")) {
-							String xbpeVal = "5";
-							int calcNI = Integer.parseInt(getOPCode);
-
-							Object opcode = String.format("%02x", calcNI + 1);
-
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		  " + ObjCode);
-							objectCode.add(ObjCode);
-
-						} else if (line.contains("+") && line.contains("@")) {
-							String xbpeVal = "5";
-							int calcNI = Integer.parseInt(getOPCode);
-
-							Object opcode = String.format("%02x", calcNI + 2);
-
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		  " + ObjCode);
-							objectCode.add(ObjCode);
-
-						} else if (line.contains("#") && !line.contains("+")) {
-
-							String xbpeVal = "2";
-							int calcNI = Integer.parseInt(getOPCode);
-							Object opcode = String.format("%02x", calcNI + 1);
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		  " + ObjCode);
-							objectCode.add(ObjCode);
-
-						} else if (line.contains("@") && !line.contains("+")) {
-							String xbpeVal = "2";
-							int calcNI = Integer.parseInt(getOPCode);
-							Object opcode = String.format("%02x", calcNI + 2);
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "	  " + ObjCode);
-							objectCode.add(ObjCode);
-
-						} else {
-							// System.out.println("opcode-"+getOPCode);
-							String xbpeVal = "2";
-							int calcNI = Integer.parseInt(getOPCode, 16);
-							Object opcode = String.format("%02x", calcNI + 3);
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		  " + ObjCode);
-							objectCode.add(ObjCode);
-
-						}
-						// oc.add(line + "				");
-
+					} else if (!line.contains("CLEAR")) {
+						SolveOthers(line, oc);
 					}
 				} else if (CountLine(line) == 4) {
 
 					if (line.contains("START")) {
 						oc.add(line + "		  " + "000000");
+					} else if (line.contains("CLEAR")) {
+
+						if (line.contains("%RA")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("A")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%RB")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("B")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%RL")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("L")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%RX")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("X")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%RS")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("S")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%RT")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("T")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%RF")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("F")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%PC") || line.contains("PC")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("PC")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
+						if (line.contains("%SW") || line.contains("SW")) {
+							String calcNI = (stc.get("CLEAR"));
+							int REG = Integer.parseInt((stc.get("SW")), 16);
+
+							String ObjCode = calcNI + "" + REG + "0";
+							oc.add(line + "	          " + ObjCode);
+							objectCode.add(ObjCode);
+						}
 					}
 
 					else if (line.contains("MOV")) {
@@ -602,7 +709,8 @@ public class sicmasm {
 						if (line.contains("%RA")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 1);
@@ -612,7 +720,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -625,7 +734,8 @@ public class sicmasm {
 									&& !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -635,7 +745,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 2);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -645,7 +756,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -657,7 +769,8 @@ public class sicmasm {
 						if (line.contains("%RB")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 1);
@@ -668,7 +781,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -682,7 +796,8 @@ public class sicmasm {
 							else if (line.contains("#") && !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -692,7 +807,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 2);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -702,7 +818,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -715,7 +832,8 @@ public class sicmasm {
 						if (line.contains("%RL")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 1);
@@ -726,7 +844,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -739,7 +858,8 @@ public class sicmasm {
 									&& !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -749,7 +869,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 2);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -759,7 +880,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("STL")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -772,7 +894,8 @@ public class sicmasm {
 						if (line.contains("%RT")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 
 								Object opcode = String.format("%02x",
 										(calcNI + 1));
@@ -783,7 +906,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 
 								Object opcode = String.format("%02x",
 										(calcNI + 2));
@@ -796,7 +920,8 @@ public class sicmasm {
 									&& !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -806,7 +931,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -818,7 +944,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -830,7 +957,8 @@ public class sicmasm {
 						if (line.contains("%RX")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 1);
@@ -841,7 +969,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -854,7 +983,8 @@ public class sicmasm {
 									&& !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -864,7 +994,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 2);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -874,7 +1005,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -883,78 +1015,9 @@ public class sicmasm {
 
 							}
 						}
-					} else {
+					} else if (!line.contains("CLEAR")) {
+						SolveOthers(line, oc);
 
-						String gpv = "000";
-						String getOPCode = "000";
-						String CalcDisp = null;
-
-						if (stc.get(Lex(line.trim())) != null) {
-							getOPCode = Lex(line.trim());
-							// System.out.println("testing-" +
-							// Lex(line.trim()));
-							getOPCode = stc.get(getOPCode);
-							CalcDisp = calcDisp(line, gpv);
-
-						} else {
-							CalcDisp = "000";
-						}
-						if (calcPassOne(CalcLocCode()).get(Lex(line.trim())) != null) {
-							gpv = Lex(line.trim());
-							gpv = calcPassOne(CalcLocCode()).get(gpv);
-							CalcDisp = calcDisp(line, gpv);
-						} else {
-							CalcDisp = "000";
-						}
-
-						if (line.contains("+") && line.contains("#")) {
-							String xbpeVal = "5";
-							int calcNI = Integer.parseInt(getOPCode);
-
-							Object opcode = String.format("%02x", calcNI + 1);
-
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		  " + ObjCode);
-							objectCode.add(ObjCode);
-
-						} else if (line.contains("+") && line.contains("@")) {
-							String xbpeVal = "5";
-							int calcNI = Integer.parseInt(getOPCode);
-
-							Object opcode = String.format("%02x", calcNI + 2);
-
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		  " + ObjCode);
-							objectCode.add(ObjCode);
-
-						} else if (line.contains("#") && !line.contains("+")) {
-
-							String xbpeVal = "2";
-							int calcNI = Integer.parseInt(getOPCode);
-							Object opcode = String.format("%02x", calcNI + 1);
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		  " + ObjCode);
-							objectCode.add(ObjCode);
-
-						} else if (line.contains("@") && !line.contains("+")) {
-							String xbpeVal = "2";
-							int calcNI = Integer.parseInt(getOPCode);
-							Object opcode = String.format("%02x", calcNI + 2);
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		  " + ObjCode);
-							objectCode.add(ObjCode);
-
-						} else {
-							// System.out.println("opcode-"+getOPCode);
-							String xbpeVal = "2";
-							int calcNI = Integer.parseInt(getOPCode, 16);
-							Object opcode = String.format("%02x", calcNI + 3);
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		  " + ObjCode);
-							objectCode.add(ObjCode);
-
-						}
-						// oc.add(line + "				");
 					}
 
 				} else if (CountLine(line) == 2) {
@@ -969,7 +1032,8 @@ public class sicmasm {
 						if (line.contains("%RA")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 1);
@@ -979,7 +1043,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -992,7 +1057,8 @@ public class sicmasm {
 									&& !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1002,7 +1068,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 2);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1012,7 +1079,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDA")));
+								int calcNI = Integer.parseInt((stc.get("LDA")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1024,7 +1092,8 @@ public class sicmasm {
 						if (line.contains("%RB")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 1);
@@ -1035,7 +1104,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -1049,7 +1119,8 @@ public class sicmasm {
 							else if (line.contains("#") && !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1059,7 +1130,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 2);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1069,7 +1141,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDB")));
+								int calcNI = Integer.parseInt((stc.get("LDB")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1082,7 +1155,8 @@ public class sicmasm {
 						if (line.contains("%RL")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 1);
@@ -1093,7 +1167,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -1106,7 +1181,8 @@ public class sicmasm {
 									&& !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1116,7 +1192,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 2);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1126,7 +1203,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDL")));
+								int calcNI = Integer.parseInt((stc.get("LDL")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1139,7 +1217,8 @@ public class sicmasm {
 						if (line.contains("%RT")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 
 								Object opcode = String.format("%02x",
 										(calcNI + 1));
@@ -1150,7 +1229,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 
 								Object opcode = String.format("%02x",
 										(calcNI + 2));
@@ -1163,7 +1243,8 @@ public class sicmasm {
 									&& !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1173,7 +1254,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -1185,7 +1267,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDT")));
+								int calcNI = Integer.parseInt((stc.get("LDT")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1197,7 +1280,8 @@ public class sicmasm {
 						if (line.contains("%RX")) {
 							if (line.contains("+") && line.contains("#")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 1);
@@ -1208,7 +1292,8 @@ public class sicmasm {
 
 							} else if (line.contains("+") && line.contains("@")) {
 								String xbpeVal = "5";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 
 								Object opcode = String.format("%02x",
 										calcNI + 2);
@@ -1221,7 +1306,8 @@ public class sicmasm {
 									&& !line.contains("+")) {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 1);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1231,7 +1317,8 @@ public class sicmasm {
 							} else if (line.contains("@")
 									&& !line.contains("+")) {
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 2);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1241,7 +1328,8 @@ public class sicmasm {
 							} else {
 
 								String xbpeVal = "2";
-								int calcNI = Integer.parseInt((stc.get("LDX")));
+								int calcNI = Integer.parseInt((stc.get("LDX")),
+										16);
 								Object opcode = String.format("%02x",
 										calcNI + 3);
 								String ObjCode = opcode + xbpeVal + CalcDisp;
@@ -1250,76 +1338,8 @@ public class sicmasm {
 
 							}
 						}
-					} else {
-
-						String gpv = "0000";
-						String getOPCode = "0000";
-						String CalcDisp = null;
-
-						if (stc.get(Lex(line.trim())) != null) {
-							getOPCode = Lex(line.trim());
-							// System.out.println("testing-" +
-							// Lex(line.trim()));
-							getOPCode = stc.get(getOPCode);
-							CalcDisp = calcDisp(line, gpv);
-
-						} else {
-							CalcDisp = "0000";
-						}
-						if (calcPassOne(CalcLocCode()).get(Lex(line.trim())) != null) {
-							gpv = Lex(line.trim());
-							gpv = calcPassOne(CalcLocCode()).get(gpv);
-							CalcDisp = calcDisp(line, gpv);
-						} else {
-							CalcDisp = "0000";
-						}
-
-						if (line.contains("+") && line.contains("#")) {
-							String xbpeVal = "5";
-							int calcNI = Integer.parseInt(getOPCode);
-
-							Object opcode = String.format("%02x", calcNI + 1);
-
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		          " + ObjCode);
-							objectCode.add(ObjCode);
-
-						} else if (line.contains("+") && line.contains("@")) {
-							String xbpeVal = "5";
-							int calcNI = Integer.parseInt(getOPCode);
-
-							Object opcode = String.format("%02x", calcNI + 2);
-
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		          " + ObjCode);
-							objectCode.add(ObjCode);
-
-						} else if (line.contains("#") && !line.contains("+")) {
-
-							String xbpeVal = "2";
-							int calcNI = Integer.parseInt(getOPCode);
-							Object opcode = String.format("%02x", calcNI + 1);
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		          " + ObjCode);
-							objectCode.add(ObjCode);
-
-						} else if (line.contains("@") && !line.contains("+")) {
-							String xbpeVal = "2";
-							int calcNI = Integer.parseInt(getOPCode);
-							Object opcode = String.format("%02x", calcNI + 2);
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		          " + ObjCode);
-							objectCode.add(ObjCode);
-
-						} else {
-							String xbpeVal = "2";
-							int calcNI = Integer.parseInt(getOPCode, 16);
-							Object opcode = String.format("%02x", calcNI + 3);
-							String ObjCode = opcode + xbpeVal + CalcDisp;
-							oc.add(line + "		          " + ObjCode);
-							objectCode.add(ObjCode);
-
-						}
+					} else if (!line.contains("CLEAR")) {
+						SolveOthers(line, oc);
 
 					}
 
@@ -1331,19 +1351,211 @@ public class sicmasm {
 
 	}
 
-	public static String Lex(String line) {
+	public static void SolveOthers(String line, ArrayList<String> oc) {
 		String OPValue = null;
 		// String pattern = "\\d+(.*?)\\w+";
 		// line.trim();
 		String[] egx = line.split("\\s+");
 		for (int i = 0; egx.length > i; i++) {
-			// System.out.println("oberhere"+egx[i]);
-			OPValue = egx[i];
 
+			if (CountLine(line) == 2) {
+				String getOPCode = "000";
+				OPValue = egx[i].trim();
+				getOPCode = stc.get(OPValue);
+				if (getOPCode != "000") {
+					int calcNI = Integer.parseInt(getOPCode, 16);
+
+					Object opcode = String.format("%02x", calcNI  + 3);
+
+					String ObjCode = opcode + "0000";
+					oc.add(line + "		  " + ObjCode);
+					objectCode.add(ObjCode);
+				}
+			} else {
+				if (egx[i].contains("+")) {
+
+					OPValue = egx[i].replace("+", "").trim();
+
+					String gpv = "000";
+					String getOPCode = "000";
+					String CalcDisp = null;
+
+					// if (stc.get(Lex(line)) != "000") {
+					// getOPCode = OPValue;
+					// System.out.println("testing-" +
+					// Lex(line.trim()));
+
+					getOPCode = stc.get(OPValue);
+
+					// CalcDisp = calcDisp(line, gpv);
+
+					// } else {
+					// getOPCode = "000";
+					// }
+
+					if (getOPCode != "000") {
+						if (calcPassOne(CalcLocCode()).get(OPValue) != null) {
+							gpv = OPValue;
+							gpv = calcPassOne(CalcLocCode()).get(gpv);
+							CalcDisp = calcDisp(line, gpv);
+						} else {
+							CalcDisp = getPC(line);
+						}
+
+						if (line.contains("+") && line.contains("#")) {
+							String xbpeVal = "5";
+							int calcNI = Integer.parseInt(getOPCode, 16);
+
+							Object opcode = String.format("%02x", calcNI + 1);
+
+							String ObjCode = opcode + xbpeVal + CalcDisp;
+							oc.add(line + "		  " + ObjCode);
+							objectCode.add(ObjCode);
+
+						} else if (line.contains("+") && line.contains("@")) {
+							String xbpeVal = "5";
+							int calcNI = Integer.parseInt(getOPCode, 16);
+
+							Object opcode = String.format("%02x", calcNI + 2);
+
+							String ObjCode = opcode + xbpeVal + CalcDisp;
+							oc.add(line + "		  " + ObjCode);
+							objectCode.add(ObjCode);
+
+						} else if (line.contains("#") && !line.contains("+")) {
+
+							String xbpeVal = "2";
+							int calcNI = Integer.parseInt(getOPCode, 16);
+							Object opcode = String.format("%02x", calcNI + 1);
+							String ObjCode = opcode + xbpeVal + CalcDisp;
+							oc.add(line + "		  " + ObjCode);
+							objectCode.add(ObjCode);
+
+						} else if (line.contains("@") && !line.contains("+")) {
+							String xbpeVal = "2";
+							int calcNI = Integer.parseInt(getOPCode, 16);
+							Object opcode = String.format("%02x", calcNI + 2);
+							String ObjCode = opcode + xbpeVal + CalcDisp;
+							oc.add(line + "	  " + ObjCode);
+							objectCode.add(ObjCode);
+
+						} else if (line.contains("+") && !line.contains("@")
+								&& !line.contains("#")) {
+							String xbpeVal = "3";
+							int calcNI = Integer.parseInt(getOPCode, 16);
+							Object opcode = String.format("%02x", calcNI + 3);
+							String ObjCode = opcode + xbpeVal + CalcDisp;
+							oc.add(line + "		  " + ObjCode);
+							objectCode.add(ObjCode);
+
+						} else {
+							// System.out.println("opcode-"+getOPCode);
+							String xbpeVal = "2";
+							int calcNI = Integer.parseInt(getOPCode, 16);
+							Object opcode = String.format("%02x", calcNI + 3);
+							String ObjCode = opcode + xbpeVal + CalcDisp;
+							oc.add(line + "		  " + ObjCode);
+							objectCode.add(ObjCode);
+
+						}
+					} else {
+						// oc.add(line + "		  ");
+					}
+
+				}
+				if (!egx[i].contains("END")) {
+					OPValue = egx[i].trim();
+
+					String gpv = "000";
+					String getOPCode = "000";
+					String CalcDisp = null;
+
+					getOPCode = stc.get(OPValue);
+
+					if (getOPCode != "000") {
+						if (calcPassOne(CalcLocCode()).get(OPValue) != null) {
+							gpv = OPValue;
+							gpv = calcPassOne(CalcLocCode()).get(gpv);
+							CalcDisp = calcDisp(line, gpv);
+						} else {
+							CalcDisp = getPC(line);
+						}
+
+						if (line.contains("+") && line.contains("#")) {
+							String xbpeVal = "5";
+							int calcNI = Integer.parseInt(getOPCode, 16);
+
+							Object opcode = String.format("%02x", calcNI + 1);
+
+							String ObjCode = opcode + xbpeVal + CalcDisp;
+							oc.add(line + "		  " + ObjCode);
+							objectCode.add(ObjCode);
+
+						} else if (line.contains("+") && line.contains("@")) {
+							String xbpeVal = "5";
+							int calcNI = Integer.parseInt(getOPCode, 16);
+
+							Object opcode = String.format("%02x", calcNI + 2);
+
+							String ObjCode = opcode + xbpeVal + CalcDisp;
+							oc.add(line + "		  " + ObjCode);
+							objectCode.add(ObjCode);
+
+						} else if (line.contains("#") && !line.contains("+")) {
+
+							String xbpeVal = "2";
+							int calcNI = Integer.parseInt(getOPCode, 16);
+							Object opcode = String.format("%02x", calcNI + 1);
+							String ObjCode = opcode + xbpeVal + CalcDisp;
+							oc.add(line + "		  " + ObjCode);
+							objectCode.add(ObjCode);
+
+						} else if (line.contains("@") && !line.contains("+")) {
+							String xbpeVal = "2";
+							int calcNI = Integer.parseInt(getOPCode, 16);
+							Object opcode = String.format("%02x", calcNI + 2);
+							String ObjCode = opcode + xbpeVal + CalcDisp;
+							oc.add(line + "	  " + ObjCode);
+							objectCode.add(ObjCode);
+
+						} else if (line.contains("+") && !line.contains("@")
+								&& !line.contains("#")) {
+							String xbpeVal = "3";
+							int calcNI = Integer.parseInt(getOPCode, 16);
+							Object opcode = String.format("%02x", calcNI + 3);
+							String ObjCode = opcode + xbpeVal + CalcDisp;
+							oc.add(line + "		  " + ObjCode);
+							objectCode.add(ObjCode);
+
+						} else {
+							// System.out.println("opcode-"+getOPCode);
+							String xbpeVal = "2";
+							int calcNI = Integer.parseInt(getOPCode, 16);
+							Object opcode = String.format("%02x", calcNI + 3);
+							String ObjCode = opcode + xbpeVal + CalcDisp;
+							oc.add(line + "		  " + ObjCode);
+							objectCode.add(ObjCode);
+
+						}
+					}
+				}
+				if (egx[i].contains("'")) {
+					System.out.println("egx--" + egx[i]);
+					OPValue = egx[i].trim();
+
+					String getOPCode = "000";
+
+					getOPCode = ParsePassOneCode(OPValue);
+
+					String ObjCode = getOPCode;
+					oc.add(line + "		  " + ObjCode);
+					objectCode.add(ObjCode);
+				}
+
+			}
 		}
 		//
 
-		return OPValue;
 	}
 
 	// public static String grabPassVal(String line) {
@@ -1373,7 +1585,7 @@ public class sicmasm {
 			if (egx.contains("%")) {
 				if (egx.contains(",")) {
 					String egxc2 = line.replaceAll(egx, " ");
-					// System.out.println("HERE-1 "+egx2);
+
 					return ParsePassOneCode(egxc2);
 
 				}
@@ -1381,6 +1593,13 @@ public class sicmasm {
 				String egxC2 = egx.replace(",", "");
 				psOneValue = egxC2;
 			}
+
+		} else if (line.contains("'")) {
+
+			String pattern = "'(.*)'";
+			String egx = regexOperation(pattern, line.trim());
+			String egxc2 = egx.replaceAll("'", "");
+			psOneValue = egxc2;
 
 		} else {
 			String pattern = "(\\w+)[.!?]?\\s*$";
@@ -1390,7 +1609,7 @@ public class sicmasm {
 				// System.out.println("HERE-3"+egx3);
 				return ParsePassOneCode(egx3);
 			} else if (egx2 != null) {
-				// System.out.println("HERE-3" + egx2);
+
 				psOneValue = egx2;
 			}
 
@@ -1412,8 +1631,6 @@ public class sicmasm {
 			}
 
 			int getPC = Integer.parseInt(getPC(line), 16);
-			// String strLoc = String.format("%04x", getLoc);
-			// String strPC = String.format("%04x", getPC);
 
 			if (getLoc > getPC) {
 				calcdDisp = String.format("%03x", (getLoc - getPC));
@@ -1517,3 +1734,4 @@ public class sicmasm {
 	}
 
 }
+
